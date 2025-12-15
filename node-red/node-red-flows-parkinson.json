@@ -1,0 +1,669 @@
+[
+    {
+        "id": "f6f852712c49e579",
+        "type": "tab",
+        "label": "Flux 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "cb59b610a8803a5d",
+        "type": "mqtt in",
+        "z": "f6f852712c49e579",
+        "name": "",
+        "topic": "health/sen0518",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "984e788ac49f87d8",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 240,
+        "y": 760,
+        "wires": [
+            [
+                "0ae6f8f452dad0a1",
+                "fa5e50c7198b3e9b"
+            ]
+        ]
+    },
+    {
+        "id": "7b8e1e4100f28a70",
+        "type": "ui-chart",
+        "z": "f6f852712c49e579",
+        "group": "12a7ae44e2642693",
+        "name": "battement de coeur",
+        "label": "battement de coeur",
+        "order": 3,
+        "chartType": "line",
+        "category": "topic",
+        "categoryType": "msg",
+        "xAxisLabel": "",
+        "xAxisProperty": "",
+        "xAxisPropertyType": "timestamp",
+        "xAxisType": "linear",
+        "xAxisFormat": "",
+        "xAxisFormatType": "auto",
+        "xmin": "",
+        "xmax": "",
+        "yAxisLabel": "Fréquence Cardiaque",
+        "yAxisProperty": "payload",
+        "yAxisPropertyType": "msg",
+        "ymin": "",
+        "ymax": "",
+        "bins": 10,
+        "action": "append",
+        "stackSeries": false,
+        "pointShape": "circle",
+        "pointRadius": 4,
+        "showLegend": true,
+        "removeOlder": 1,
+        "removeOlderUnit": "3600",
+        "removeOlderPoints": "",
+        "colors": [
+            "#0095ff",
+            "#ff0000",
+            "#ff7f0e",
+            "#2ca02c",
+            "#a347e1",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "textColor": [
+            "#666666"
+        ],
+        "textColorDefault": true,
+        "gridColor": [
+            "#e5e5e5"
+        ],
+        "gridColorDefault": true,
+        "width": 6,
+        "height": 8,
+        "className": "",
+        "interpolation": "linear",
+        "x": 710,
+        "y": 580,
+        "wires": [
+            [
+                "8f3ad2caa45836b6"
+            ]
+        ]
+    },
+    {
+        "id": "8f3ad2caa45836b6",
+        "type": "debug",
+        "z": "f6f852712c49e579",
+        "name": "debug 2",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1020,
+        "y": 580,
+        "wires": []
+    },
+    {
+        "id": "0ae6f8f452dad0a1",
+        "type": "function",
+        "z": "f6f852712c49e579",
+        "name": "function FC",
+        "func": "let payload = msg.payload;\n\n// Vérifier que toutes les données sont présentes\nif (payload && payload.timestamp && payload.heartRate !== undefined) {\n    // Convertir le timestamp Unix en millisecondes\n    let date = new Date(payload.timestamp * 1000);  \n    let formattedDate = date.toLocaleString(\"fr-FR\", {\n        year: 'numeric',\n        month: '2-digit',\n        day: '2-digit',\n        hour: '2-digit',\n        minute: '2-digit',\n        second: '2-digit'\n    });\n\n    // Créer le message pour la fréquence cardiaque\n    //let msgHeartRate = {\n     /*   payload: {\n            topic: 'Fréquence Cardiaque',\n            value: payload.heartRate,\n            timestamp: formattedDate\n        }\n    };*/\n\n\n    let msgHeartRate = payload.heartRate;\n    // Retourner le message\n   msg.payload=msgHeartRate;\n  \n} else {\n    msg.payload = \"Données invalides\";\n}\n return msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 470,
+        "y": 580,
+        "wires": [
+            [
+                "7b8e1e4100f28a70",
+                "39e7d1a42657ca97"
+            ]
+        ]
+    },
+    {
+        "id": "fa5e50c7198b3e9b",
+        "type": "function",
+        "z": "f6f852712c49e579",
+        "name": "function SpO2",
+        "func": "let payload = msg.payload;\n\n// Vérifier que toutes les données sont présentes\nif (payload && payload.timestamp && payload.spo2 !== undefined) {\n    // Convertir le timestamp Unix en millisecondes\n    let date = new Date(payload.timestamp * 1000);  \n    let formattedDate = date.toLocaleString(\"fr-FR\", {\n        year: 'numeric',\n        month: '2-digit',\n        day: '2-digit',\n        hour: '2-digit',\n        minute: '2-digit',\n        second: '2-digit'\n    });\n\n    // Créer le message pour la saturation en oxygène\n   /*let msgSpO2 = {\n        payload: {\n            topic: 'SpO2',\n            value: payload.spo2,\n            timestamp: formattedDate\n        }\n    };*/\n    let msgspo2 = payload.spo2;\n    // Retourner le message\n   msg.payload=msgspo2;\n\n    // Retourner le message\n} else {\n    return { payload: \"Données invalides\" };\n}\n    return msg;\n    \n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 480,
+        "y": 780,
+        "wires": [
+            [
+                "4f6ffccb2aa43dae",
+                "6403766d425c9e16"
+            ]
+        ]
+    },
+    {
+        "id": "4f6ffccb2aa43dae",
+        "type": "ui-chart",
+        "z": "f6f852712c49e579",
+        "group": "12a7ae44e2642693",
+        "name": "SpO2",
+        "label": "SpO2",
+        "order": 4,
+        "chartType": "bar",
+        "category": "topic",
+        "categoryType": "msg",
+        "xAxisLabel": "",
+        "xAxisProperty": "",
+        "xAxisPropertyType": "timestamp",
+        "xAxisType": "category",
+        "xAxisFormat": "",
+        "xAxisFormatType": "auto",
+        "xmin": "",
+        "xmax": "",
+        "yAxisLabel": "SpO2",
+        "yAxisProperty": "payload",
+        "yAxisPropertyType": "msg",
+        "ymin": "",
+        "ymax": "",
+        "bins": 10,
+        "action": "append",
+        "stackSeries": false,
+        "pointShape": "circle",
+        "pointRadius": 4,
+        "showLegend": true,
+        "removeOlder": 1,
+        "removeOlderUnit": "3600",
+        "removeOlderPoints": "",
+        "colors": [
+            "#0095ff",
+            "#ff0000",
+            "#ff7f0e",
+            "#2ca02c",
+            "#a347e1",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "textColor": [
+            "#666666"
+        ],
+        "textColorDefault": true,
+        "gridColor": [
+            "#e5e5e5"
+        ],
+        "gridColorDefault": true,
+        "width": 6,
+        "height": 8,
+        "className": "",
+        "interpolation": "linear",
+        "x": 770,
+        "y": 780,
+        "wires": [
+            [
+                "9a235c4a20fec48c"
+            ]
+        ]
+    },
+    {
+        "id": "9a235c4a20fec48c",
+        "type": "debug",
+        "z": "f6f852712c49e579",
+        "name": "debug 6",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1040,
+        "y": 780,
+        "wires": []
+    },
+    {
+        "id": "39e7d1a42657ca97",
+        "type": "ui-notification",
+        "z": "f6f852712c49e579",
+        "ui": "795bf448bb83b6e8",
+        "position": "top right",
+        "colorDefault": true,
+        "color": "#000000",
+        "displayTime": "3",
+        "showCountdown": true,
+        "outputs": 1,
+        "allowDismiss": true,
+        "dismissText": "battement du coeur",
+        "allowConfirm": false,
+        "confirmText": "Confirm",
+        "raw": false,
+        "className": "",
+        "name": "battement de coeur",
+        "x": 810,
+        "y": 480,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "6403766d425c9e16",
+        "type": "ui-notification",
+        "z": "f6f852712c49e579",
+        "ui": "795bf448bb83b6e8",
+        "position": "bottom right",
+        "colorDefault": true,
+        "color": "#000000",
+        "displayTime": "3",
+        "showCountdown": true,
+        "outputs": 1,
+        "allowDismiss": true,
+        "dismissText": "taux d'oxygène",
+        "allowConfirm": false,
+        "confirmText": "Confirm",
+        "raw": false,
+        "className": "",
+        "name": "taux d'oxygène dans le sang",
+        "x": 820,
+        "y": 860,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "0cc770852fd40937",
+        "type": "mqtt in",
+        "z": "f6f852712c49e579",
+        "name": "",
+        "topic": "mouvement/detection",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "984e788ac49f87d8",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 280,
+        "y": 1140,
+        "wires": [
+            [
+                "88df63f8e529a636",
+                "be1eefa1dd853bbb"
+            ]
+        ]
+    },
+    {
+        "id": "88df63f8e529a636",
+        "type": "function",
+        "z": "f6f852712c49e579",
+        "name": "function 1",
+        "func": "let data = msg.payload;\n\n// Si le capteur dit chute = true\nif (data.chute === true) {\n    msg.payload = \"CHUTE DÉTECTÉE\";\n} else {\n    msg.payload = \"Aucune chute\";\n}\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 560,
+        "y": 1100,
+        "wires": [
+            [
+                "a25dd882430e5329",
+                "325828dac7eff9e7"
+            ]
+        ]
+    },
+    {
+        "id": "be1eefa1dd853bbb",
+        "type": "debug",
+        "z": "f6f852712c49e579",
+        "name": "debug 7",
+        "active": true,
+        "tosidebar": true,
+        "console": true,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 430,
+        "y": 1200,
+        "wires": []
+    },
+    {
+        "id": "a25dd882430e5329",
+        "type": "debug",
+        "z": "f6f852712c49e579",
+        "name": "debug 8",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 820,
+        "y": 1020,
+        "wires": []
+    },
+    {
+        "id": "325828dac7eff9e7",
+        "type": "ui-notification",
+        "z": "f6f852712c49e579",
+        "ui": "795bf448bb83b6e8",
+        "position": "top right",
+        "colorDefault": true,
+        "color": "#000000",
+        "displayTime": "3",
+        "showCountdown": true,
+        "outputs": 1,
+        "allowDismiss": true,
+        "dismissText": "Close",
+        "allowConfirm": false,
+        "confirmText": "Confirm",
+        "raw": false,
+        "className": "",
+        "name": "",
+        "x": 830,
+        "y": 1120,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "7bf5d049a851e97f",
+        "type": "mqtt in",
+        "z": "f6f852712c49e579",
+        "name": "",
+        "topic": "gyloscope/detection",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "984e788ac49f87d8",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 190,
+        "y": 1440,
+        "wires": [
+            [
+                "35144af50f23551a",
+                "a4d9296ee1e784f0",
+                "00a412e86711b747"
+            ]
+        ]
+    },
+    {
+        "id": "35144af50f23551a",
+        "type": "function",
+        "z": "f6f852712c49e579",
+        "name": "function 3",
+        "func": "let state = msg.payload;   // ex: \"standing\"\n\nswitch(state){\n    case \"standing\":\n        msg.payload = 0;\n        break;\n        \n    case \"walking\":\n        msg.payload = 5;\n        break;\n        \n    case \"running\":\n        msg.payload = 10;\n        break;\n        \n    default:\n        msg.payload = 0;   // si autre valeur\n}\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 480,
+        "y": 1400,
+        "wires": [
+            [
+                "026a357d4558ee11",
+                "a62d7a2c390dbaf6"
+            ]
+        ]
+    },
+    {
+        "id": "a4d9296ee1e784f0",
+        "type": "debug",
+        "z": "f6f852712c49e579",
+        "name": "debug 9",
+        "active": true,
+        "tosidebar": true,
+        "console": true,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 350,
+        "y": 1500,
+        "wires": []
+    },
+    {
+        "id": "026a357d4558ee11",
+        "type": "debug",
+        "z": "f6f852712c49e579",
+        "name": "debug 10",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 760,
+        "y": 1540,
+        "wires": []
+    },
+    {
+        "id": "a62d7a2c390dbaf6",
+        "type": "ui-gauge",
+        "z": "f6f852712c49e579",
+        "name": "état mouvement",
+        "group": "12a7ae44e2642693",
+        "order": 1,
+        "value": "payload",
+        "valueType": "msg",
+        "width": 3,
+        "height": 3,
+        "gtype": "gauge-half",
+        "gstyle": "needle",
+        "title": "état mouvement",
+        "alwaysShowTitle": false,
+        "floatingTitlePosition": "top-left",
+        "units": "units",
+        "icon": "",
+        "prefix": "",
+        "suffix": "",
+        "segments": [
+            {
+                "from": "0",
+                "color": "#5cd65c",
+                "text": "",
+                "textType": "label"
+            },
+            {
+                "from": "4",
+                "color": "#ffc800",
+                "text": "",
+                "textType": "label"
+            },
+            {
+                "from": "7",
+                "color": "#ea5353",
+                "text": "",
+                "textType": "label"
+            }
+        ],
+        "min": 0,
+        "max": 10,
+        "sizeThickness": 16,
+        "sizeGap": 4,
+        "sizeKeyThickness": 8,
+        "styleRounded": true,
+        "styleGlow": false,
+        "className": "",
+        "x": 900,
+        "y": 1400,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "00a412e86711b747",
+        "type": "ui-notification",
+        "z": "f6f852712c49e579",
+        "ui": "795bf448bb83b6e8",
+        "position": "top right",
+        "colorDefault": true,
+        "color": "#000000",
+        "displayTime": "3",
+        "showCountdown": true,
+        "outputs": 1,
+        "allowDismiss": true,
+        "dismissText": "Close",
+        "allowConfirm": false,
+        "confirmText": "Confirm",
+        "raw": false,
+        "className": "",
+        "name": "état",
+        "x": 490,
+        "y": 1300,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "984e788ac49f87d8",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "172.18.32.45",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": 4,
+        "keepalive": 60,
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "12a7ae44e2642693",
+        "type": "ui-group",
+        "name": "Graphs",
+        "page": "4dde75a4c8091253",
+        "width": 6,
+        "height": 1,
+        "order": 2,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "795bf448bb83b6e8",
+        "type": "ui-base",
+        "name": "My Dashboard",
+        "path": "/dashboard",
+        "appIcon": "",
+        "includeClientData": true,
+        "acceptsClientConfig": [
+            "ui-notification",
+            "ui-control"
+        ],
+        "showPathInSidebar": false,
+        "headerContent": "page",
+        "navigationStyle": "default",
+        "titleBarStyle": "default",
+        "showReconnectNotification": true,
+        "notificationDisplayTime": 1,
+        "showDisconnectNotification": true,
+        "allowInstall": false
+    },
+    {
+        "id": "4dde75a4c8091253",
+        "type": "ui-page",
+        "name": "Page 1",
+        "ui": "795bf448bb83b6e8",
+        "path": "/page1",
+        "icon": "home",
+        "layout": "grid",
+        "theme": "c20cc05d4cc85dfb",
+        "breakpoints": [
+            {
+                "name": "Default",
+                "px": "0",
+                "cols": "3"
+            },
+            {
+                "name": "Tablet",
+                "px": "576",
+                "cols": "6"
+            },
+            {
+                "name": "Small Desktop",
+                "px": "768",
+                "cols": "9"
+            },
+            {
+                "name": "Desktop",
+                "px": "1024",
+                "cols": "12"
+            }
+        ],
+        "order": 1,
+        "className": "",
+        "visible": true,
+        "disabled": "false"
+    },
+    {
+        "id": "c20cc05d4cc85dfb",
+        "type": "ui-theme",
+        "name": "Default Theme",
+        "colors": {
+            "surface": "#ffffff",
+            "primary": "#0094CE",
+            "bgPage": "#eeeeee",
+            "groupBg": "#ffffff",
+            "groupOutline": "#cccccc"
+        },
+        "sizes": {
+            "density": "default",
+            "pagePadding": "12px",
+            "groupGap": "12px",
+            "groupBorderRadius": "4px",
+            "widgetGap": "12px"
+        }
+    },
+    {
+        "id": "1f9d402dbca199f1",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "@flowfuse/node-red-dashboard": "1.28.0"
+        }
+    }
+]
